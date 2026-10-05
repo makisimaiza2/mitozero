@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>【2日目】大学祭 店舗点検リアルタイム監視パネル</title>
+  <title>大学祭 店舗点検リアルタイム監視パネル【2日目】</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -28,7 +28,16 @@
       gap: 16px;
     }
 
-    h1 { font-size: 1.5rem; font-weight: bold; color: #fbbf24; }
+    h1 { font-size: 1.5rem; font-weight: bold; }
+    .badge-day2 {
+      background: #3b82f6;
+      color: #ffffff;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
     .sync-status { font-size: 0.9rem; color: #38bdf8; font-weight: bold; }
 
     .btn-reset-all {
@@ -55,7 +64,7 @@
     .card {
       background: #1e293b;
       border-radius: 12px;
-      padding: 20px;
+      padding: 18px;
       border: 3px solid #334155;
       display: flex;
       flex-direction: column;
@@ -64,36 +73,44 @@
     }
 
     .booth-title { font-size: 1.25rem; font-weight: bold; line-height: 1.3; }
-    
-    /* 2日目用の進捗状況バッジ */
-    .checklist {
+
+    /* ２日目チェック状況バッジ */
+    .check-container {
       display: flex;
       gap: 6px;
-      font-size: 0.78rem;
       margin-top: 2px;
+      margin-bottom: 2px;
     }
-    .badge {
-      padding: 4px 8px;
+    .check-badge {
+      flex: 1;
+      font-size: 0.75rem;
+      padding: 6px 4px;
       border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
       background: #334155;
       color: #94a3b8;
-      font-weight: bold;
     }
-    .badge.ok {
-      background: #065f46;
-      color: #6ee7b7;
+    .check-badge.ok {
+      background: #1e3a8a;
+      color: #93c5fd;
+      border: 1px solid #3b82f6;
     }
 
-    .status-text { font-size: 0.95rem; color: #94a3b8; font-weight: 500; }
+    .status-text { font-size: 0.9rem; color: #94a3b8; font-weight: 500; }
 
-    .btn-group { display: flex; gap: 8px; }
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
 
     .btn-action {
       flex: 1;
-      padding: 12px 8px;
+      padding: 10px 8px;
       border: none;
       border-radius: 8px;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: bold;
       cursor: pointer;
       color: #94a3b8;
@@ -104,10 +121,10 @@
     .btn-action:not(:disabled):active { transform: scale(0.95); }
 
     .btn-cancel {
-      padding: 12px;
+      padding: 10px;
       border: none;
       border-radius: 8px;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: bold;
       cursor: pointer;
       color: #fca5a5;
@@ -117,7 +134,7 @@
     }
     .btn-cancel:disabled { cursor: not-allowed; opacity: 0.6; }
 
-    /* 🚨 点検要請中 */
+    /* 🚨 点検要請中 (両条件クリア) */
     .card.requested {
       border-color: #ef4444 !important;
       background: #450a0a !important;
@@ -132,25 +149,46 @@
     .card.requested .btn-cancel { display: block; }
 
     /* 🟡 点検中 */
-    .card.inspecting { border-color: #f59e0b; background: #291e07; }
+    .card.inspecting {
+      border-color: #f59e0b;
+      background: #291e07;
+    }
     .card.inspecting .status-text { color: #fde047; }
-    .card.inspecting .btn-action { background: #d97706; color: #ffffff; }
+    .card.inspecting .btn-action {
+      background: #d97706;
+      color: #ffffff;
+    }
 
     /* 🟢 完了 */
-    .card.completed { border-color: #10b981; background: #022c22; }
+    .card.completed {
+      border-color: #10b981;
+      background: #022c22;
+    }
     .card.completed .status-text { color: #6ee7b7; }
-    .card.completed .btn-action { background: #059669; color: #ffffff; }
+    .card.completed .btn-action {
+      background: #059669;
+      color: #ffffff;
+    }
 
     @keyframes alert-flash {
-      0% { box-shadow: 0 0 10px #ef4444, inset 0 0 8px #ef4444; transform: scale(1); }
-      100% { box-shadow: 0 0 35px #ef4444, inset 0 0 25px #ef4444; transform: scale(1.03); }
+      0% {
+        box-shadow: 0 0 10px #ef4444, inset 0 0 8px #ef4444;
+        transform: scale(1);
+      }
+      100% {
+        box-shadow: 0 0 35px #ef4444, inset 0 0 25px #ef4444;
+        transform: scale(1.02);
+      }
     }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>🚨【最終日/2日目】屋外出店 清掃・物品返却監視パネル</h1>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <h1>🚨 屋外出店点検管理システム</h1>
+      <span class="badge-day2">2日目・最終確認モード</span>
+    </div>
     <div class="header-left">
       <button class="btn-reset-all" id="btnResetAll" onclick="handleResetAllClick()">🔄 全店舗リセット</button>
       <div class="sync-status" id="syncTime">リアルタイム同期中...</div>
@@ -160,7 +198,7 @@
   <div class="grid" id="boothContainer"></div>
 
   <script>
-    // 🔗 GASのWebアプリURL（発行したURLを貼り付け）
+    // 🔗 発行したGASのWebアプリURL（設定済み）
     const GAS_URL = "https://script.google.com/macros/s/AKfycbypJR_DL9HnJMP2Lf1rZWFfzWASiOrH9nmD10GI0tU5LZFBlB6nleDzfrtsstJExaD7gw/exec";
 
     const BOOTH_NAMES = [
@@ -197,6 +235,7 @@
 
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
+
       osc.type = 'sawtooth';
       osc.frequency.setValueAtTime(900, audioCtx.currentTime);
       osc.frequency.linearRampToValueAtTime(600, audioCtx.currentTime + 0.2);
@@ -222,9 +261,9 @@
         card.id = `card-${i}`;
         card.innerHTML = `
           <div class="booth-title">${boothName}</div>
-          <div class="checklist">
-            <span class="badge" id="badge-self-${i}">自己点検: 未</span>
-            <span class="badge" id="badge-return-${i}">物品返却: 未</span>
+          <div class="check-container">
+            <div class="check-badge" id="self-${i}">📝 自己点検: 未</div>
+            <div class="check-badge" id="return-${i}">📦 返却確認: 未</div>
           </div>
           <div class="status-text" id="status-${i}">🟢 待機中</div>
           <div class="btn-group">
@@ -236,33 +275,30 @@
       }
     }
 
-    function renderCard(booth, dataObj) {
+    function renderCard(booth, dataItem) {
       if (processingBooths[booth]) return;
-
-      const status = typeof dataObj === 'string' ? dataObj : dataObj.status;
-      const selfDone = dataObj.selfDone || false;
-      const returnDone = dataObj.returnDone || false;
 
       const card = document.getElementById(`card-${booth}`);
       const statusText = document.getElementById(`status-${booth}`);
       const btn = document.getElementById(`btn-${booth}`);
-      const badgeSelf = document.getElementById(`badge-self-${booth}`);
-      const badgeReturn = document.getElementById(`badge-return-${booth}`);
+      const selfBadge = document.getElementById(`self-${booth}`);
+      const returnBadge = document.getElementById(`return-${booth}`);
 
-      // バッジ更新
-      if (badgeSelf) {
-        badgeSelf.className = 'badge ' + (selfDone ? 'ok' : '');
-        badgeSelf.textContent = `自己点検: ${selfDone ? '済' : '未'}`;
-      }
-      if (badgeReturn) {
-        badgeReturn.className = 'badge ' + (returnDone ? 'ok' : '');
-        badgeReturn.textContent = `物品返却: ${returnDone ? '済' : '未'}`;
-      }
+      const status = dataItem.status || 'waiting';
+      const selfSubmitted = dataItem.selfSubmitted || false;
+      const returnConfirmed = dataItem.returnConfirmed || false;
+
+      // ２日目チェック状況バッジ更新
+      selfBadge.className = 'check-badge ' + (selfSubmitted ? 'ok' : '');
+      selfBadge.textContent = selfSubmitted ? '📝 自己点検: 済' : '📝 自己点検: 未';
+
+      returnBadge.className = 'check-badge ' + (returnConfirmed ? 'ok' : '');
+      returnBadge.textContent = returnConfirmed ? '📦 返却確認: 済' : '📦 返却確認: 未';
 
       card.className = 'card ' + status;
 
       if (status === 'requested') {
-        statusText.textContent = '🚨 点検要請が発生中！';
+        statusText.textContent = '🚨 点検要請発生中！（条件完了）';
         btn.textContent = '▶ 点検開始';
         btn.disabled = false;
       } else if (status === 'inspecting') {
@@ -274,12 +310,13 @@
         btn.textContent = 'リセット（待機へ）';
         btn.disabled = false;
       } else {
-        if (!selfDone && !returnDone) {
-          statusText.textContent = '🟢 待機中（点検・返却待ち）';
-        } else if (!selfDone) {
-          statusText.textContent = '⏳ 自己点検フォーム待ち';
-        } else if (!returnDone) {
-          statusText.textContent = '⏳ 運営の物品返却確認待ち';
+        // 待機中の内訳表示
+        if (!selfSubmitted && !returnConfirmed) {
+          statusText.textContent = '🟢 待機中（自己点検・返却未）';
+        } else if (selfSubmitted && !returnConfirmed) {
+          statusText.textContent = '🟡 待機中（返却確認待ち）';
+        } else if (!selfSubmitted && returnConfirmed) {
+          statusText.textContent = '🟡 待機中（自己点検提出待ち）';
         } else {
           statusText.textContent = '🟢 待機中';
         }
@@ -290,28 +327,31 @@
 
     async function syncStatuses() {
       try {
-        const res = await fetchWithTimeout(`${GAS_URL}?_t=${Date.now()}`, 3000);
+        // ２日目モード用 APIパラメーター ?day=2
+        const res = await fetchWithTimeout(`${GAS_URL}?day=2&_t=${Date.now()}`, 4000);
         const data = await res.json();
         let soundRequired = false;
 
         for (let i = 1; i <= 24; i++) {
           const key = String(i);
-          const boothData = data[key] || { status: 'waiting', selfDone: false, returnDone: false };
+          const item = data[key] || { status: 'waiting', returnConfirmed: false, selfSubmitted: false };
 
           if (processingBooths[i]) continue;
 
-          if (boothData.status === 'requested' && lastStatuses[key] !== 'requested') {
+          if (item.status === 'requested' && lastStatuses[key] !== 'requested') {
             soundRequired = true;
           }
 
-          renderCard(i, boothData);
-          lastStatuses[key] = boothData.status;
+          renderCard(i, item);
+          lastStatuses[key] = item.status;
         }
 
         if (soundRequired) playAlertSound();
         document.getElementById('syncTime').textContent = `最終更新: ${new Date().toLocaleTimeString()}`;
 
-      } catch (e) {}
+      } catch (e) {
+        // 通信エラー時スキップ
+      }
     }
 
     function setCardLoading(booth, isLoading, message = "⏳ 更新中...") {
@@ -334,17 +374,23 @@
       const name = BOOTH_NAMES[booth - 1] || `店舗 ${booth}`;
       let nextStatus = 'waiting';
 
-      if (currentStatus === 'requested') nextStatus = 'inspecting';
-      else if (currentStatus === 'inspecting') nextStatus = 'completed';
-      else if (currentStatus === 'completed') {
-        if (!confirm(`「${name}」の点検完了を取り消し、待機状態にリセットしますか？`)) return;
+      if (currentStatus === 'requested') {
+        nextStatus = 'inspecting';
+      } else if (currentStatus === 'inspecting') {
+        nextStatus = 'completed';
+      } else if (currentStatus === 'completed') {
+        const confirmResult = confirm(`「${name}」の点検完了を取り消し、待機状態にリセットしますか？`);
+        if (!confirmResult) return;
         nextStatus = 'waiting';
       }
 
       setCardLoading(booth, true, "⏳ 処理中...");
 
       try {
-        const res = await fetchWithTimeout(`${GAS_URL}?action=update&booth=${booth}&status=${nextStatus}&_t=${Date.now()}`, 6000);
+        const fetchPromise = fetchWithTimeout(`${GAS_URL}?action=update&booth=${booth}&status=${nextStatus}&_t=${Date.now()}`, 6000);
+        const timerPromise = sleep(1200);
+
+        const [res] = await Promise.all([fetchPromise, timerPromise]);
         const data = await res.json();
 
         if (data.result === 'success') {
@@ -355,56 +401,79 @@
           throw new Error('Server error');
         }
       } catch (e) {
-        alert('通信エラーが発生しました。再度お試しください。');
+        alert('通信エラーが発生しました。もう一度お試しください。');
         processingBooths[booth] = false;
         syncStatuses();
       }
     }
 
     async function handleCancelClick(booth) {
+      const key = String(booth);
       const name = BOOTH_NAMES[booth - 1] || `店舗 ${booth}`;
-      if (!confirm(`「${name}」の点検要請を取り消しますか？`)) return;
+      const confirmResult = confirm(`「${name}」の点検要請を取り消しますか？`);
+      if (!confirmResult) return;
 
       setCardLoading(booth, true, "⏳ 更新中...");
 
       try {
-        const res = await fetchWithTimeout(`${GAS_URL}?action=cancel&booth=${booth}&_t=${Date.now()}`, 5000);
+        const fetchPromise = fetchWithTimeout(`${GAS_URL}?action=cancel&booth=${booth}&_t=${Date.now()}`, 5000);
+        const timerPromise = sleep(1200);
+
+        const [res] = await Promise.all([fetchPromise, timerPromise]);
         const data = await res.json();
 
         if (data.result === 'success') {
+          lastStatuses[key] = 'waiting';
           processingBooths[booth] = false;
           syncStatuses();
         } else {
           throw new Error('Server error');
         }
       } catch (e) {
-        alert('通信エラーが発生しました。');
+        alert('通信エラーが発生しました。もう一度お試しください。');
         processingBooths[booth] = false;
         syncStatuses();
       }
     }
 
     async function handleResetAllClick() {
-      if (!confirm("【警告】全店舗のステータスを『待機中』にリセットしますか？")) return;
+      const confirmResult = confirm("【警告】すべての店舗のステータスおよび自己点検記録をリセットしますか？\nこの操作は元に戻せません。");
+      if (!confirmResult) return;
 
       const resetBtn = document.getElementById('btnResetAll');
       resetBtn.disabled = true;
+      resetBtn.textContent = "⏳ リセット中...";
 
-      for (let i = 1; i <= 24; i++) setCardLoading(i, true, "⏳ リセット中...");
+      for (let i = 1; i <= 24; i++) {
+        setCardLoading(i, true, "⏳ リセット中...");
+      }
 
       try {
-        const res = await fetchWithTimeout(`${GAS_URL}?action=resetAll&_t=${Date.now()}`, 8000);
+        const fetchPromise = fetchWithTimeout(`${GAS_URL}?action=resetAll&_t=${Date.now()}`, 8000);
+        const timerPromise = sleep(1500);
+
+        const [res] = await Promise.all([fetchPromise, timerPromise]);
         const data = await res.json();
 
         if (data.result === 'success') {
-          alert('すべての店舗をリセットしました。');
+          for (let i = 1; i <= 24; i++) {
+            lastStatuses[String(i)] = 'waiting';
+            processingBooths[i] = false;
+          }
+          alert('すべての店舗を待機状態にリセットしました。');
+          syncStatuses();
+        } else {
+          throw new Error('Server error');
         }
       } catch (e) {
-        alert('エラーが発生しました。');
-      } finally {
-        for (let i = 1; i <= 24; i++) processingBooths[i] = false;
-        resetBtn.disabled = false;
+        alert('リセット処理中にエラーが発生しました。');
+        for (let i = 1; i <= 24; i++) {
+          processingBooths[i] = false;
+        }
         syncStatuses();
+      } finally {
+        resetBtn.disabled = false;
+        resetBtn.textContent = "🔄 全店舗リセット";
       }
     }
 
