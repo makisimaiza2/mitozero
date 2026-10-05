@@ -190,26 +190,44 @@
     }
 
     function playAlertSound() {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
 
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
 
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(900, audioCtx.currentTime);
-      osc.frequency.linearRampToValueAtTime(600, audioCtx.currentTime + 0.2);
+  const now = audioCtx.currentTime;
 
-      gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+  // 「ピピピピ」と4回鳴らす
+  for (let i = 0; i < 4; i++) {
+    const startTime = now + i * 0.7;
+    const endTime = startTime + 0.35;
 
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
 
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.2);
-    }
+    // 警報っぽい音
+    osc.type = 'square';
 
+    // 少し高めの音から低めの音へ
+    osc.frequency.setValueAtTime(1000, startTime);
+    osc.frequency.linearRampToValueAtTime(700, endTime);
+
+    // 音量
+    gain.gain.setValueAtTime(0.001, startTime);
+    gain.gain.exponentialRampToValueAtTime(0.45, startTime + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.001, endTime);
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc.start(startTime);
+    osc.stop(endTime);
+  }
+}
+    
     function initGrid() {
       const container = document.getElementById('boothContainer');
       container.innerHTML = '';
