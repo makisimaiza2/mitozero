@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>【２日目】清掃点検監視システム</title>
+  <title>【２日目】清掃点検許可システム</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -148,10 +148,10 @@
 <body>
 
   <header>
-    <h1>🚨 【２日目】2026年第77回藍涼祭 清掃点検監視システム</h1>
+    <h1>🚨 【２日目】第77回藍涼祭 清掃点検許可システム</h1>
     <div class="header-left">
       <button class="btn-reset-all" id="btnResetAll" onclick="handleResetAllClick()">🔄 全店舗リセット</button>
-      <div class="sync-status" id="syncTime">リアルタイム同期中...</div>
+      <div class="sync-status" id="syncTime">リアルタイム同期中🔄️</div>
     </div>
   </header>
 
@@ -162,10 +162,10 @@
     const DAY_MODE = 2; // 2日目モード
 
     const BOOTH_NAMES = [
-      "1. 国語１年", "2. 社会科１年", "3. 心理１年", "4. 音楽１年",
-      "5. 理科１年", "6. 特別支援１年", "7. [kapela]", "8. 技術４年",
-      "9. 算数・数学４年", "10. さ☆ぶら", "11. 生活創造３年", "12. MOVE",
-      "13. 生活創造１年", "14. 生活創造２年", "15. 養護教育１年", "16. 算数・数学１年",
+      "1. 国語１年", "2. 社会１年", "3. 心理１年", "4. 音楽１年",
+      "5. 理科１年", "6. 特支１年", "7. [kapela]", "8. 技術４年",
+      "9. 数学４年", "10. さ☆ぶら", "11. 生活３年", "12. MOVE",
+      "13. 生活１年", "14. 生活２年", "15. 養護１年", "16. 数学１年",
       "17. 剣道部", "18. よさこい", "19. 教育１年", "20. 卓球部",
       "21. 英語１年", "22. 硬式野球部", "23. 保健体育１年", "24. 軟式野球部"
     ];
@@ -289,7 +289,7 @@
       } else {
         // 待機中の場合の詳細テキスト
         if (returnDone && !selfDone) {
-          statusText.textContent = '⏳ 返却済（自己点検待ち）';
+          statusText.textContent = '⏳ 返却確認済（自己点検待ち）';
         } else if (!returnDone && selfDone) {
           statusText.textContent = '⏳ 自己点検済（返却確認待ち）';
         } else {
